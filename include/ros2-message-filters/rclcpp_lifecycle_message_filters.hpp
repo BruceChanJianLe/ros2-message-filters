@@ -32,7 +32,10 @@ namespace rclcpp_lifecycle_node
     // Transform listener
     std::shared_ptr<tf2_ros::Buffer> tf2_buffer_;
 
-    std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>> sub_;
+    // NOTE: declaring an rclcpp_node internally and passing it to subscriber does not work!
+    // workaround: use ros2 humble message_filters that support lifecycle nodes
+    // std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>> sub_; 
+    std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::PointCloud2, rclcpp_lifecycle::LifecycleNode>> sub_;
     std::shared_ptr<tf2_ros::MessageFilter<sensor_msgs::msg::PointCloud2>> filter_;
 
   };

@@ -26,26 +26,27 @@ namespace rclcpp_lifecycle_node
     custom_qos_profile.depth = 50;
     auto rclcpp_node_ = std::make_shared<rclcpp::Node>(this->get_name(), this->get_namespace(), this->get_node_options());
 
-    sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>>(rclcpp_node_, "/velodyne_points", custom_qos_profile);
+    sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::PointCloud2, rclcpp_lifecycle::LifecycleNode>>(shared_from_this(), "/velodyne_points", custom_qos_profile);
+    // sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>>(rclcpp_node_, "/velodyne_points", custom_qos_profile);
     // sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>>();
-    sub_->registerCallback(
-      // [this](...) // like so
-      [this](sensor_msgs::msg::PointCloud2::ConstSharedPtr message) // Or you swallow it (...)
-      {
-        RCLCPP_INFO_STREAM(this->get_logger(), "I am here!");
-      }
-    );
-    sub_->unsubscribe();
-
-    // filter_ = std::make_shared<tf2_ros::MessageFilter<sensor_msgs::msg::PointCloud2>>(*sub_, *tf2_buffer_, "map", 10, rclcpp_node_->get_node_logging_interface(), rclcpp_node_->get_node_clock_interface(), buffer_timeout); 
-
-    // filter_->registerCallback(
+    // sub_->registerCallback(
     //   // [this](...) // like so
     //   [this](sensor_msgs::msg::PointCloud2::ConstSharedPtr message) // Or you swallow it (...)
     //   {
     //     RCLCPP_INFO_STREAM(this->get_logger(), "I am here!");
     //   }
     // );
+    // sub_->unsubscribe();
+
+    filter_ = std::make_shared<tf2_ros::MessageFilter<sensor_msgs::msg::PointCloud2>>(*sub_, *tf2_buffer_, "map", 10, rclcpp_node_->get_node_logging_interface(), rclcpp_node_->get_node_clock_interface(), buffer_timeout); 
+
+    filter_->registerCallback(
+      // [this](...) // like so
+      [this](sensor_msgs::msg::PointCloud2::ConstSharedPtr message) // Or you swallow it (...)
+      {
+        RCLCPP_INFO_STREAM(this->get_logger(), "I am here!");
+      }
+    );
     // sub_->subscribe();
     RCLCPP_INFO_STREAM(this->get_logger(), "On configure.");
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
