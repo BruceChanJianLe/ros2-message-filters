@@ -27,7 +27,8 @@ namespace rclcpp_node
       // [this](...) // like so
       [this](sensor_msgs::msg::PointCloud2::ConstSharedPtr message) // Or you swallow it (...)
       {
-        RCLCPP_INFO_STREAM(this->get_logger(), "I am here!");
+        // To remove unused parameter warnings, let's just use it, of course you can swallow it as suggested above
+        RCLCPP_INFO_STREAM(this->get_logger(), "I am here! With frame: " << message->header.frame_id);
       }
     );
     // sub_->subscribe();
