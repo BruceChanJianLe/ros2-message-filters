@@ -5,6 +5,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -13,6 +15,10 @@ find_package(sensor_msgs REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(rosbag2_cpp REQUIRED)
+find_package(rosbag2_storage REQUIRED)
+
 
 # BUILD
 include_directories(include)
@@ -24,6 +30,8 @@ set(dependencies
   message_filters
   tf2
   tf2_ros
+  rosbag2_cpp
+  rosbag2_storage
 )
 
 # RCLCPP NODE
@@ -48,6 +56,15 @@ ament_target_dependencies(
   ${dependencies}
 )
 
+# Manual Entry
+add_executable(pass_through_message_filters_node
+  src/pass_through_message_filters_node.cpp
+)
+ament_target_dependencies(
+  pass_through_message_filters_node
+  ${dependencies}
+)
+
 # INSTALL
 install(
   TARGETS rclcpp_node_mf
@@ -56,6 +73,11 @@ install(
 
 install(
   TARGETS rclcpp_lifecycle_node_mf
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(
+  TARGETS pass_through_message_filters_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
