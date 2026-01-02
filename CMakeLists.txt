@@ -60,9 +60,21 @@ ament_target_dependencies(
 add_executable(pass_through_message_filters_node
   src/pass_through_message_filters_node.cpp
 )
-ament_target_dependencies(
-  pass_through_message_filters_node
+ament_target_dependencies(pass_through_message_filters_node
   ${dependencies}
+)
+
+# Verify queue size of message filters
+add_executable(filter_size_node
+  src/filter_size_node.cpp
+)
+ament_target_dependencies(filter_size_node
+  ${dependencies}
+)
+set_target_properties(filter_size_node PROPERTIES
+  CXX_STANDARD 23
+  CXX_STANDARD_REQUIRED ON
+  CXX_EXTENSIONS OFF
 )
 
 # INSTALL
@@ -78,6 +90,11 @@ install(
 
 install(
   TARGETS pass_through_message_filters_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(
+  TARGETS filter_size_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
